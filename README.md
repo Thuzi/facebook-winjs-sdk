@@ -1,24 +1,44 @@
-# NodeJS Library for Facebook
+# WinJS Library for Facebook
 
-With facebook-node-sdk you can now easily write the same code and share between your server (nodejs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
+With facebook-winjs-sdk you can now easily write the same code and share between your windows 8 apps (winjs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
 
-# Installing facebook-node-sdk
+facebook-winjs-sdk is a fork of [facebook-node-sdk](https://github.com/Thuzi/facebook-node-sdk/) designed to work in both WinJS applications and NodeJS.
+
+# Installing facebook-winjs-sdk
 
 ```
-npm install fb
+Install-Package FBWinJS
 ```
 
-```javascript
-var FB = require('fb');
+```html
+<script src="/js/fb.js"></script>
 ```
+
+facebook-winjs-sdk is exposed as a global variable FBWinJS in order to avoid conflict with the Facebook Javascript SDK.
+
+You can set `FBWinJS` as `FB` variable for portability.
+
+```js
+FB = FBWinJS; // global variable
+```
+
+```js
+var FB = FBWinJS; // local variable
+
+// or
+
+(function(FB){
+    
+})(FBWinJS);
+```
+
+**Following examples assumes `FB` as `FBWinJS`.**
 
 ## Graph Api
 
 ### Get
 
 ```js
-var FB = require('fb');
-
 FB.api('4', function (res) {
   if(!res || res.error) {
    console.log(!res ? 'error occurred' : res.error);
@@ -32,8 +52,6 @@ FB.api('4', function (res) {
 __Passing Parameters__
 
 ```js
-var FB = require('fb');
-
 FB.api('4', { fields: ['id', 'name'] }, function (res) {
   if(!res || res.error) {
     console.log(!res ? 'error occurred' : res.error);
@@ -47,7 +65,6 @@ FB.api('4', { fields: ['id', 'name'] }, function (res) {
 ### Post
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var body = 'My first post using facebook-node-sdk';
@@ -63,7 +80,6 @@ FB.api('me/feed', 'post', { message: body}, function (res) {
 ### Delete
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var postId = '1234567890';
@@ -81,7 +97,6 @@ FB.api(postId, 'delete', function (res) {
 ### Query
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
@@ -96,7 +111,6 @@ FB.api('fql', { q: 'SELECT uid FROM user WHERE uid=me()' }, function (res) {
 ### Multi-query
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 FB.api('fql', { q: [
@@ -115,7 +129,6 @@ FB.api('fql', { q: [
 ### Named Multi-query
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 FB.api('fql', { q : {
@@ -134,7 +147,6 @@ FB.api('fql', { q : {
 ## Batch Requests
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var extractEtag;
@@ -249,7 +261,6 @@ extractETag = function(res) {
 ### Post
 
 ```js
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var message = 'Hi from facebook-node-js';
@@ -279,13 +290,11 @@ FB.api('', 'post', {
 
 *This is a non-standard behavior and does not work in the official client side FB JS SDK.*
 
-facebook-node-sdk is capable of handling oauth requests which return non-json responses. You can use it by calling `api` method.
+facebook-winjs-sdk is capable of handling oauth requests which return non-json responses. You can use it by calling `api` method.
 
 ### Get facebook application access token
 
 ```javascript
-var FB = require('fb');
-
 FB.api('oauth/access_token', {
     client_id: 'app_id',
     client_secret: 'app_secret',
@@ -303,8 +312,6 @@ FB.api('oauth/access_token', {
 ### Exchange code for access token
 
 ```javascript
-var FB = require('./fb');
-
 FB.api('oauth/access_token', {
     client_id: 'app_id',
     client_secret: 'app_secret',
@@ -326,7 +333,6 @@ well as error.
 
 ```javascript
 var url = require('url');
-var FB = require('./fb');
 
 var urlToParse = 'http://yoururl.com/callback?code=.....#_=_';
 var result = url.parse(urlToParse, true);
@@ -348,8 +354,6 @@ var code = result.query.code;
 ### Extend expiry time of the access token
 
 ```javascript
-var FB = require('./fb');
-
 FB.api('oauth/access_token', {
     client_id: 'client_id',
     client_secret: 'client_secret',
@@ -368,13 +372,11 @@ FB.api('oauth/access_token', {
 
 ## Legacy REST Api
 
-__Although Legacy REST Api is supported by facebook-node-sdk, it is highly discouraged to be used, as Facebook is in the process of deprecating the Legacy REST Api.__
+__Although Legacy REST Api is supported by facebook-winjs-sdk, it is highly discouraged to be used, as Facebook is in the process of deprecating the Legacy REST Api.__
 
 ### Get
 
 ```javascript
-var FB = require('fb');
-
 FB.api({ method: 'users.getInfo', uids: ['4'], fields: ['uid', 'name'] }, function (res) {
     if(!res || res.error_msg) {
         console.log(!res ? 'error occurred' : res.error_msg);
@@ -389,7 +391,6 @@ FB.api({ method: 'users.getInfo', uids: ['4'], fields: ['uid', 'name'] }, functi
 ### Post
 
 ```javascript
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var message = 'Hi from facebook-node-sdk';
@@ -405,7 +406,6 @@ FB.api({ method: 'stream.publish', message: message }, function (res) {
 ### Delete
 
 ```javascript
-var FB = require('fb');
 FB.setAccessToken('access_token');
 
 var postId = '.....';
@@ -425,7 +425,6 @@ FB.api({ method: 'stream.remove', post_id: postId }, function (res) {
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
 ```js
-var FB = require('FB');
 FB.setAccessToken('access_token');
 ```
 
@@ -441,7 +440,6 @@ FB.api('me', { fields: ['id', 'name'], access_token: 'access_token' }, function 
 *Unlike `setAccessToken` this is a standard api and exists in FB JS SDK.*
 
 ```js
-var FB = require('FB');
 FB.setAccessToken('access_token');
 var accessToken = FB.getAccessToken();
 ```
@@ -454,7 +452,6 @@ var accessToken = FB.getAccessToken();
 When this method is called with no parameters it will return all of the current options.
 
 ```js
-var FB = require('FB');
 var options = FB.options();
 ```
 
@@ -485,10 +482,9 @@ using the same `FB` object.
 
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
-Gets the string representation of the facebook-node-sdk library version.
+Gets the string representation of the facebook-winjs-sdk library version.
 
 ```js
-var FB = require('FB');
 var version = FB.version;
 ```
 
@@ -499,8 +495,6 @@ var version = FB.version;
 *This is a non-standard api and does not exist in the official client side FB JS SDK.*
 
 ```js
-var FB = require('FB');
-
 var signedRequestValue = 'signed_request_value';
 var appSecret = 'app_secret';
 
@@ -519,7 +513,6 @@ If you already set the appSeceret in options, you can ignore the second paramete
 If appSecret is absent, parseSignedRequest will throw an error.
 
 ```js
-var FB = require('FB');
 FB.options({ 'appSecret': 'app_secret'});
 
 var signedRequestValue = 'signed_request_value';
@@ -540,10 +533,10 @@ Some examples of various error codes you can check for:
 * `'ECONNRESET'` - connection reset by peer
 * `'ETIMEDOUT'` - connection timed out
 * `'ESOCKETTIMEDOUT'` - socket timed out
+* `'UNKNOWN'` - unknown error occured. (most likely there is not internet connection)
 
 
 ```js
-var FB = require('FB');
 FB.options({timeout: 1, accessToken: 'access_token'});
 
 FB.api('/me', function (res) {
