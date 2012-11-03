@@ -291,7 +291,7 @@
                 }
                 , function error(req) {
                     if (req.status === 0) {
-                        cb({ error: { code: 'Unknown', errno: 'Unknown' } });
+                        cb({ error: { code: 'UNKNOWN', errno: 'UNKNOWN' } });
                     } else {
                         cb(JSON.parse(req.response));
                     }
