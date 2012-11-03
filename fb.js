@@ -2,12 +2,12 @@
     
     var FB = (function() {
 
-        var isWinJs = WinJS ? true : false;
-    
+        var isWinJS = WinJS ? true : false;
+
         var   request = isWinJS ? null : require('request')
             , crypto  = isWinJS ? null : require('crypto')
             , version = isWinJS ? null : require(require('path').resolve(__dirname, 'package.json')).version
-            , api 
+            , api
             , graph
             , rest
             , oauthRequest
@@ -25,7 +25,7 @@
                 , 'appId': null
                 , 'appSecret': null
                 , 'timeout': null
-                , 'scope':  null
+                , 'scope': null
                 , 'redirect_uri': null
             }
             , readOnlyCalls = {
@@ -99,7 +99,7 @@
          * @param params {Object} the parameters for the query
          * @param cb {Function} the callback function to handle the response
          */
-        api = function() {
+        api = function () {
             // 
             // FB.api('/platform', function(response) {
             //  console.log(response.company_overview);
@@ -126,7 +126,7 @@
             // });
             //
             //
-            if(typeof arguments[0] === 'string') {
+            if (typeof arguments[0] === 'string') {
                 graph.apply(this, arguments);
             } else {
                 rest.apply(this, arguments);
@@ -153,7 +153,7 @@
          *  );
          *
          */
-        graph = function() {
+        graph = function () {
             var   args = Array.prototype.slice.call(arguments)
                 , path = args.shift()
                 , next = args.shift()
@@ -161,13 +161,13 @@
                 , params
                 , cb;
 
-            while(next) {
+            while (next) {
                 var type = typeof next;
-                if(type === 'string' && !method) {
+                if (type === 'string' && !method) {
                     method = next.toLowerCase();
-                } else if(type === 'function' && !cb) {
+                } else if (type === 'function' && !cb) {
                     cb = next;
-                } else if(type === 'object' && !params) {
+                } else if (type === 'object' && !params) {
                     params = next;
                 } else {
                     log('Invalid argument passed to FB.api(): ' + next);
@@ -180,11 +180,11 @@
             params = params || {};
 
             // remove prefix slash if one is given, as it's already in the base url
-            if(path[0] === '/') {
+            if (path[0] === '/') {
                 path = path.substr(1);
             }
 
-            if(METHODS.indexOf(method) < 0) {
+            if (METHODS.indexOf(method) < 0) {
                 log('Invalid method passed to FB.api(): ' + method);
                 return;
             }
@@ -199,7 +199,7 @@
          * @param params { Object } The required arguments vary based on the method
          * being used, but speficy the method itself is mandatory:
          */
-        rest = function(params, cb) {
+        rest = function (params, cb) {
             var method = params.method.toLowerCase();
 
             params.format = 'json-strings';
@@ -218,7 +218,7 @@
          * @param params {Object}   the parameters for the query
          * @param cb {Function}     the callback function to handle the response
          */
-        oauthRequest = function(domain, path, method, params, cb) {
+        oauthRequest = function (domain, path, method, params, cb) {
             var   uri
                 , body
                 , key
@@ -226,72 +226,98 @@
                 , requestOptions
                 , isOAuthRequest;
 
-            cb = cb || function() {};
-            if(!params.access_token && options('accessToken')) {
+            cb = cb || function () { };
+            if (!params.access_token && options('accessToken')) {
                 params.access_token = options('accessToken');
             }
 
-            if(domain === 'graph') {
+            if (domain === 'graph') {
                 uri = 'https://graph.facebook.com/' + path;
                 isOAuthRequest = /^oauth.*/.test('oauth/');
             }
-            else if(domain == 'api') {
+            else if (domain == 'api') {
                 uri = 'https://api.facebook.com/' + path;
             }
-            else if(domain == 'api_read') {
+            else if (domain == 'api_read') {
                 uri = 'https://api-read.facebook.com/' + path;
             }
 
-            if(method === 'post') {
+            if (method === 'post') {
                 body = '';
-                if(params.access_token) {
+                if (params.access_token) {
                     uri += '?access_token=' + encodeURIComponent(params.access_token);
                     delete params['access_token'];
                 }
 
-                for(key in params) {
+                for (key in params) {
                     value = params[key];
-                    if(typeof value !== 'string') {
+                    if (typeof value !== 'string') {
                         value = JSON.stringify(value);
                     }
-                    if(value !== undefined) {
+                    if (value !== undefined) {
                         body += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
                     }
                 }
 
-                if(body.length > 0) {
+                if (body.length > 0) {
                     body = body.substring(0, body.length - 1);
                 }
             } else {
                 uri += '?';
-                for(key in params) {
+                for (key in params) {
                     value = params[key];
-                    if(typeof value !== 'string') {
+                    if (typeof value !== 'string') {
                         value = JSON.stringify(value);
                     }
                     uri += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
                 }
-                uri = uri.substring(0, uri.length -1);
+                uri = uri.substring(0, uri.length - 1);
             };
+
+            if (isWinJS) {
+                WinJS.xhr({
+                    type: method,
+                    url: uri,
+                    data: body
+                })
+                .done(function success(req) {
+                    body = req.response;
+                    if (isOAuthRequest && req.response && req.status === 200 &&
+                                       /.*text\/plain.*/.test(req.getResponseHeader('content-type'))) {
+                        cb(parseOAuthApiResponse(body));
+                    } else {
+                        cb(JSON.parse(body));
+                    }
+                }
+                , function error(req) {
+                    if (req.status === 0) {
+                        cb({ error: { code: 'Unknown', errno: 'Unknown' } });
+                    } else {
+                        cb(JSON.parse(req.response));
+                    }
+                });
+
+                return;
+            }
 
             requestOptions = {
                   method: method
                 , uri: uri
                 , body: body
             };
-            if(options('timeout')) {
+            if (options('timeout')) {
                 requestOptions['timeout'] = options('timeout');
             }
             request(requestOptions
-            , function(error, response, body) {
-                if(error !== null) {
-                    if(error === Object(error) && has(error, 'error')) {
+            , function (error, response, body) {
+                if (error !== null) {
+                    if (error === Object(error) && has(error, 'error')) {
                         return cb(error);
                     }
-                    return cb({error:error});
+                    return cb({ error: error });
                 }
 
-                if(isOAuthRequest && response && response.statusCode === 200 &&
+                if (isOAuthRequest && response && response.statusCode === 200 &&
                     response.headers && /.*text\/plain.*/.test(response.headers['content-type'])) {
                     cb(parseOAuthApiResponse(body));
                 } else {
@@ -308,11 +334,11 @@
 
             result = {};
             body = body.split('&');
-            for(key in body) {
+            for (key in body) {
                 split = body[key].split('=');
-                if(split.length === 2) {
+                if (split.length === 2) {
                     value = split[1];
-                    if(!isNaN(value)) {
+                    if (!isNaN(value)) {
                         result[split[0]] = parseInt(value);
                     } else {
                         result[split[0]] = value;
@@ -323,7 +349,7 @@
             return result;
         };
 
-        log = function(d) {
+        log = function (d) {
             // todo
             console.log(d);
         };
@@ -337,7 +363,7 @@
         };
 
         setAccessToken = function (accessToken) {
-            options({'accessToken': accessToken});
+            options({ 'accessToken': accessToken });
         };
 
         /**
@@ -364,25 +390,25 @@
                 , hmac
                 , base64Digest
                 , base64UrlDigest;
-            
-            if(!signedRequest) {
+
+            if (!signedRequest) {
                 return;
             }
 
-            if(!appSecret) {
+            if (!appSecret) {
                 throw new Error('appSecret required');
             }
 
             split = signedRequest.split('.');
 
-            if(split.length !== 2) {
+            if (split.length !== 2) {
                 return;
             }
 
             encodedSignature = split.shift();
             encodedEnvelope = split.shift();
 
-            if(!encodedSignature || !encodedEnvelope) {
+            if (!encodedSignature || !encodedEnvelope) {
                 return;
             }
 
@@ -392,7 +418,7 @@
                 return;
             }
 
-            if(!(envelope && has(envelope, 'algorithm') && envelope.algorithm.toUpperCase() === 'HMAC-SHA256')) {
+            if (!(envelope && has(envelope, 'algorithm') && envelope.algorithm.toUpperCase() === 'HMAC-SHA256')) {
                 return;
             }
 
@@ -405,8 +431,8 @@
 
             // Replace illegal characters
             base64UrlDigest = base64UrlDigest.replace(/\+/g, '-').replace(/\//g, '_');
-            
-            if(base64UrlDigest !== encodedSignature) {
+
+            if (base64UrlDigest !== encodedSignature) {
                 return;
             }
 
@@ -417,18 +443,18 @@
             var base64String = str.replace(/\-/g, '+').replace(/_/g, '/');
             var buffer = new Buffer(base64String, 'base64');
             return buffer.toString('utf8');
-        }
+        };
 
         options = function (keyOrOptions) {
             var key;
-            if(!keyOrOptions) {
+            if (!keyOrOptions) {
                 return opts;
             }
-            if(Object.prototype.toString.call(keyOrOptions) == '[object String]') {
+            if (Object.prototype.toString.call(keyOrOptions) == '[object String]') {
                 return has(opts, keyOrOptions) ? opts[keyOrOptions] : null;
             }
-            for(key in opts) {
-                if(has(opts, key) && has(keyOrOptions, key)) {
+            for (key in opts) {
+                if (has(opts, key) && has(keyOrOptions, key)) {
                     opts[key] = keyOrOptions[key];
                 }
             }
@@ -438,13 +464,17 @@
               api: api
             , getAccessToken: getAccessToken
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
-            , parseSignedRequest : parseSignedRequest // this method does not exist in fb js sdk
+            , parseSignedRequest: parseSignedRequest // this method does not exist in fb js sdk
             , options: options // this method does not exist in the fb js sdk
             , version: version // this method does not exist in the fb js sdk
         };
 
     })();
 
-    module.exports = FB;
+    if (WinJS) {
+        FBWinJS = FB;
+    } else {
+        module.exports = FB;
+    }
 
 })();
