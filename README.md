@@ -263,7 +263,7 @@ extractETag = function(res) {
 ```js
 FB.setAccessToken('access_token');
 
-var message = 'Hi from facebook-node-js';
+var message = 'Hi from facebook-winjs-sdk';
 FB.api('', 'post', {
     batch: [
         { method: 'post', relative_url: 'me/feed', body:'message=' + encodeURIComponent(message) }
