@@ -494,7 +494,7 @@ var version = FB.version;
 
 ### parseSignedRequest
 
-*This is a non-standard api and does not exist in the official client side FB JS SDK.*
+*This is a non-standard api and does not exist in the official client side FB JS SDK. Currently supported only in NodeJS.*
 
 ```js
 var signedRequestValue = 'signed_request_value';
