@@ -19,11 +19,13 @@ facebook-winjs-sdk is exposed as a global variable FBWinJS in order to avoid con
 You can set `FBWinJS` as `FB` variable for portability.
 
 ```js
-FB = FBWinJS; // global variable
+// global variable alias
+window.FB = FBWinJS;
 ```
 
 ```js
-var FB = FBWinJS; // local variable
+// local variable aslias
+var FB = FBWinJS;
 
 // or
 
