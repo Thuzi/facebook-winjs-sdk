@@ -4,6 +4,10 @@ With facebook-winjs-sdk you can now easily write the same code and share between
 
 facebook-winjs-sdk is a fork of [facebook-node-sdk](https://github.com/Thuzi/facebook-node-sdk/) designed to work in both WinJS applications and NodeJS.
 
+# Sample
+
+You can find the sample of facebook-winjs-sdk at https://github.com/Thuzi/facebook-winjs-sdk-sample.
+
 # Installing facebook-winjs-sdk
 
 ```
