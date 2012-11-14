@@ -10,7 +10,6 @@
     <language>en-US</language>
     <licenseUrl>https://github.com/Thuzi/facebook-winjs-sdk/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/Thuzi/facebook-winjs-sdk</projectUrl>
-    <iconUrl>http://csharpsdk.org/assets/img/logo75x75.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>Facebook WinJS FBWinJS</tags>
   </metadata>
