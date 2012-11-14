@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+<package xmlns='http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd'>
+  <metadata>
+    <id>Facebook</id>
+    <version>$version$</version>
+    <title/>
+    <authors>Thuzi</authors>
+    <owners>Prabir Shrestha, Jim Zimmerman</owners>
+    <description>With facebook-winjs-sdk you can now easily write the same code and share between your windows 8 apps (winjs) and the client (Facebook Javascript SDK).</description>
+    <language>en-US</language>
+    <licenseUrl>https://github.com/Thuzi/facebook-winjs-sdk/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Thuzi/facebook-winjs-sdk</projectUrl>
+    <iconUrl>http://csharpsdk.org/assets/img/logo75x75.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>Facebook WinJS FBWinJS</tags>
+  </metadata>
+  <files>
+    <file src="fb.js" target = "content\js\fb.js" />
+  </files>
+</package>
