@@ -6,7 +6,7 @@
 
         var   request = isWinJS ? null : require('request')
             , crypto  = isWinJS ? null : require('crypto')
-            , version = isWinJS ? '0.0.10' : require(require('path').resolve(__dirname, 'package.json')).version
+            , version = isWinJS ? '0.0.11' : require(require('path').resolve(__dirname, 'package.json')).version
             , api
             , graph
             , rest
