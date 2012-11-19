@@ -11,7 +11,7 @@ You can find the sample of facebook-winjs-sdk at https://github.com/Thuzi/facebo
 # Installing facebook-winjs-sdk
 
 ```
-Install-Package FBWinJS
+Install-Package fb
 ```
 
 ```html

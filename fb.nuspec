@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <id>FBWinJS</id>
-        <version>0.0.11</version>
+        <id>fb</id>
+        <version>0.0.12</version>
         <title />
         <authors>Thuzi</authors>
         <owners>Prabir Shrestha,Jim Zimmerman</owners>
@@ -11,10 +11,10 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>With facebook-winjs-sdk you can now easily write the same code and share between your windows 8 apps (winjs) and the client (Facebook Javascript SDK).</description>
         <language>en-US</language>
-        <tags>Facebook WinJS FBWinJS FB</tags>
-        <dependencies>
-            <dependency id="fb" version="0.0.12" />
-        </dependencies>
+        <tags>Facebook WinJS FBWinJS fb</tags>
     </metadata>
-    <files />
+    <files>
+        <file src="fb.js" target="content\js\fb.js" />
+        <file src="readme.txt" target="readme.txt" />
+    </files>
 </package>
