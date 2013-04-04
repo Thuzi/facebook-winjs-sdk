@@ -98,9 +98,9 @@
         */
         getLoginUrl = function (opt) {
             opt = opt || {};
-            var clientId = opt.appId || opt.client_id || options('appId');
-            var scope = opt.scope || options('scope');
-            var scopeQuery = '';
+            var   clientId = opt.appId || opt.client_id || options('appId')
+                , scope = opt.scope || options('scope')
+                , scopeQuery = '';
 
             if (!clientId) {
                 throw new Error('client_id required')
