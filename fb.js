@@ -3,10 +3,9 @@
     var FB = (function() {
 
         var isWinJS = WinJS ? true : false;
-        var version = '0.0.12';
         var   request = isWinJS ? null : require('request')
             , crypto  = isWinJS ? null : require('crypto')
-            , version = isWinJS ? version : require(require('path').resolve(__dirname, 'package.json')).version
+            , version = isWinJS ? '0.0.13' : require(require('path').resolve(__dirname, 'package.json')).version
             , getLoginUrl
             , api
             , graph
