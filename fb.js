@@ -94,20 +94,32 @@
         /**
         *
         * @access public
-        * @param appId {String} the Facebook application id
-        * @param scope {String} a list of permissions to ask from user
+        * @param opt {Object} the parameters for appId and scope
         */
-        getLoginUrl = function (appId, scope) {
+        getLoginUrl = function (opt) {
+            opt = opt || {};
+            var clientId = opt.appId || opt.client_id || options('appId');
+            var scope = opt.scope || options('scope');
+            var scopeQuery = '';
+
+            if (!clientId) {
+                throw new Error('client_id required')
+            }
+
+            if (!scope) {
+                scopeQuery = '&scope=' + encodeURIComponent(scope);
+            }
+            
             // ping Facebook for instrumentation requirement
-            pingFacebook(appId);
+            pingFacebook(clientId);
 
             var redirectUri = 'https://www.facebook.com/connect/login_success.html',
             loginUrl = 'https://www.facebook.com/dialog/oauth'
                 + '?response_type=token'
                 + '&display=popup'
-                + '&scope=' + encodeURIComponent(scope)
+                +  scopeQuery
                 + '&redirect_uri=' + encodeURIComponent(redirectUri)
-                + '&client_id=' + appId;
+                + '&client_id=' + clientId;
             return loginUrl;
         };
 
