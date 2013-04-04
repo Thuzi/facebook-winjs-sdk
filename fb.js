@@ -106,7 +106,7 @@
                 throw new Error('client_id required')
             }
 
-            if (!scope) {
+            if (scope) {
                 scopeQuery = '&scope=' + encodeURIComponent(scope);
             }
             
