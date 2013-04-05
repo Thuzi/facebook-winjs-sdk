@@ -3,10 +3,10 @@
     var FB = (function() {
 
         var isWinJS = WinJS ? true : false;
-
         var   request = isWinJS ? null : require('request')
             , crypto  = isWinJS ? null : require('crypto')
-            , version = isWinJS ? '0.0.12' : require(require('path').resolve(__dirname, 'package.json')).version
+            , version = isWinJS ? '0.0.13' : require(require('path').resolve(__dirname, 'package.json')).version
+            , getLoginUrl
             , api
             , graph
             , rest
@@ -92,6 +92,89 @@
             };
 
         /**
+        *
+        * @access public
+        * @param opt {Object} the parameters for appId and scope
+        */
+        getLoginUrl = function (opt) {
+            opt = opt || {};
+            var   clientId = opt.appId || opt.client_id || options('appId')
+                , scope = opt.scope || options('scope')
+                , scopeQuery = '';
+
+            if (!clientId) {
+                throw new Error('client_id required')
+            }
+
+            if (scope) {
+                scopeQuery = '&scope=' + encodeURIComponent(scope);
+            }
+            
+            // ping Facebook for instrumentation requirement
+            pingFacebook(clientId);
+
+            var redirectUri = 'https://www.facebook.com/connect/login_success.html',
+            loginUrl = 'https://www.facebook.com/dialog/oauth'
+                + '?response_type=token'
+                + '&display=popup'
+                +  scopeQuery
+                + '&redirect_uri=' + encodeURIComponent(redirectUri)
+                + '&client_id=' + clientId;
+            return loginUrl;
+        };
+
+        /**
+        *
+        * @access private
+        * @param appId {String} the Facebook application id
+        */
+        //HTTP POST to:
+        //https://www.facebook.com/impression.php
+        //Parameters:
+        //plugin = "featured_resources"
+        //payload = <JSON_ENCODED_DATA>
+
+        //JSON_ENCODED_DATA
+        //resource "thuzi_winjssdk" for your Win JS SDK and "thuzi_nodejssdk" for your Node.js SDK
+        //appid (Facebook app ID)
+        //version (Your resource version. This is whatever versioning string you attribute to your resource.)
+
+        //Response: A pixel image.
+
+        pingFacebook = function (appId) {
+            try {
+                if (isWinJS) {
+                    var method = 'POST';
+                    var uri = 'https://www.facebook.com/impression.php';
+                    var encodedData = {
+                        plugin: 'featured_resources',
+                        payload: {
+                            resource: 'thuzi_winjssdk',
+                            appid: appId,
+                            version: version
+                        }
+                    };
+                    var body = JSON.parse(encodedData);
+
+                    WinJS.xhr({
+                        type: method,
+                        url: uri,
+                        data: body
+                    })
+                    .done(function success(req) {
+                        var res = req.response;
+                    }
+                    , function error(req) {
+                        var error = req.response;
+                    });
+
+                    return;
+                }
+            } catch (e) {
+                // Eat the error
+            }
+        };
+        /**
          *
          * @access public
          * @param path {String} the url path
@@ -100,32 +183,7 @@
          * @param cb {Function} the callback function to handle the response
          */
         api = function () {
-            // 
-            // FB.api('/platform', function(response) {
-            //  console.log(response.company_overview);
-            // });
-            //
-            // FB.api('/platform/posts', { limit: 3 }, function(response) {
-            // });
-            //
-            // FB.api('/me/feed', 'post', { message: body }, function(response) {
-            //  if(!response || response.error) {
-            //      console.log('Error occured');
-            //  } else {
-            //      console.log('Post ID:' + response.id);
-            //  }
-            // });
-            //
-            // var postId = '1234567890';
-            // FB.api(postId, 'delete', function(response) {
-            //  if(!response || response.error) {
-            //      console.log('Error occurred');
-            //  } else {
-            //      console.log('Post was deleted');
-            //  }
-            // });
-            //
-            //
+
             if (typeof arguments[0] === 'string') {
                 graph.apply(this, arguments);
             } else {
@@ -461,7 +519,8 @@
         };
 
         return {
-              api: api
+            api: api
+            , getLoginUrl: getLoginUrl // this method does not exist in fb js sdk
             , getAccessToken: getAccessToken
             , setAccessToken: setAccessToken // this method does not exist in fb js sdk
             , parseSignedRequest: parseSignedRequest // this method does not exist in fb js sdk
