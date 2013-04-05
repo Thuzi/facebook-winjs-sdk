@@ -99,28 +99,38 @@
         getLoginUrl = function (opt) {
             opt = opt || {};
             var   clientId = opt.appId || opt.client_id || options('appId')
+                , redirectUri = opt.redirectUri || opt.redirect_uri || options('redirectUri') || 'https://www.facebook.com/connect/login_success.html'
                 , scope = opt.scope || options('scope')
-                , scopeQuery = '';
+                , display = opt.display
+                , scopeQuery = ''
+                , displayQuery = ''
+                , loginUrl;
 
             if (!clientId) {
-                throw new Error('client_id required')
+                throw new Error('client_id required');
             }
 
             if (scope) {
                 scopeQuery = '&scope=' + encodeURIComponent(scope);
             }
-            
+
+            if(!display && isWinJS) {
+                display = 'popup';
+            }
+
+            if(display) {
+                displayQuery = '&display=' + display;
+            }
+
             // ping Facebook for instrumentation requirement
             pingFacebook(clientId);
 
-            var redirectUri = 'https://www.facebook.com/connect/login_success.html',
-            loginUrl = 'https://www.facebook.com/dialog/oauth'
-                + '?response_type=token'
-                + '&display=popup'
+            return 'https://www.facebook.com/dialog/oauth'
+                + '?response_type=' + (opt.responseType || opt.response_type || 'token')
                 +  scopeQuery
+                +  displayQuery
                 + '&redirect_uri=' + encodeURIComponent(redirectUri)
                 + '&client_id=' + clientId;
-            return loginUrl;
         };
 
         /**
@@ -154,6 +164,7 @@
                             version: version
                         }
                     };
+
                     var body = JSON.parse(encodedData);
 
                     WinJS.xhr({
@@ -162,10 +173,10 @@
                         data: body
                     })
                     .done(function success(req) {
-                        var res = req.response;
+                        // ignore response
                     }
                     , function error(req) {
-                        var error = req.response;
+                        // ignore error
                     });
 
                     return;
