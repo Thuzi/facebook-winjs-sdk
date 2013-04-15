@@ -7,6 +7,7 @@
             , crypto  = isWinJS ? null : require('crypto')
             , version = isWinJS ? '0.0.13' : require(require('path').resolve(__dirname, 'package.json')).version
             , getLoginUrl
+            , pingFacebook
             , api
             , graph
             , rest
