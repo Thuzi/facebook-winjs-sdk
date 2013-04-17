@@ -6,6 +6,10 @@ This SDK will report usage of which AppID is using it directly to Facebook.
 
 facebook-winjs-sdk is a fork of [facebook-node-sdk](https://github.com/Thuzi/facebook-node-sdk/) designed to work in both WinJS applications and NodeJS.
 
+**Author:** [Thuzi](http://www.thuzi.com/)
+
+**License:** Apache v2
+
 # Sample
 
 You can find the sample of facebook-winjs-sdk at https://github.com/Thuzi/facebook-winjs-sdk-sample.
