@@ -2,6 +2,8 @@
 
 With facebook-winjs-sdk you can now easily write the same code and share between your windows 8 apps (winjs) and the client ([Facebook Javascript SDK](https://developers.facebook.com/docs/reference/javascript/)).
 
+This SDK will report usage of which AppID is using it directly to Facebook.
+
 facebook-winjs-sdk is a fork of [facebook-node-sdk](https://github.com/Thuzi/facebook-node-sdk/) designed to work in both WinJS applications and NodeJS.
 
 # Sample
