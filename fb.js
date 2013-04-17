@@ -5,7 +5,7 @@
         var isWinJS = WinJS ? true : false;
         var   request = isWinJS ? null : require('request')
             , crypto  = isWinJS ? null : require('crypto')
-            , version = isWinJS ? '0.0.14' : require(require('path').resolve(__dirname, 'package.json')).version
+            , version = isWinJS ? '0.0.15' : require(require('path').resolve(__dirname, 'package.json')).version
             , getLoginUrl
             , pingFacebook
             , api
