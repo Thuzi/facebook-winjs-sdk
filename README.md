@@ -12,7 +12,7 @@ facebook-winjs-sdk is a fork of [facebook-node-sdk](https://github.com/Thuzi/fac
 
 # Sample
 
-You can find the sample of facebook-winjs-sdk at https://github.com/Thuzi/facebook-winjs-sdk-sample.
+You can find the scrumptious sample using the facebook-winjs-sdk with details on how to authenticate with the Web Authentication Broker at https://github.com/Thuzi/facebook-winjs-sdk-sample.
 
 # Installing facebook-winjs-sdk
 
